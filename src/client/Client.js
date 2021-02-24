@@ -2,8 +2,7 @@
 
 const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
-const WebSocketManager = require('./websocket/WebSocketManager');
-const { Error, TypeError } = require('../errors');
+const { TypeError } = require('../errors');
 const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
 const ChannelManager = require('../managers/ChannelManager');
 const GuildManager = require('../managers/GuildManager');
@@ -33,12 +32,6 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     this._validateOptions();
-
-    /**
-     * The WebSocket manager of the client
-     * @type {WebSocketManager}
-     */
-    this.ws = new WebSocketManager(this);
 
     /**
      * The action manager of the client
@@ -137,39 +130,6 @@ class Client extends BaseClient {
    */
   get uptime() {
     return this.readyAt ? Date.now() - this.readyAt : null;
-  }
-
-  /**
-   * Logs the client in, establishing a websocket connection to Discord.
-   * @param {string} [token=this.token] Token of the account to log in with
-   * @returns {Promise<string>} Token of the account used
-   * @example
-   * client.login('my token');
-   */
-  async login(token = this.token) {
-    if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
-    this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
-    this.emit(
-      Events.DEBUG,
-      `Provided token: ${token
-        .split('.')
-        .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
-        .join('.')}`,
-    );
-
-    if (this.options.presence) {
-      this.options.ws.presence = await this.presence._parse(this.options.presence);
-    }
-
-    this.emit(Events.DEBUG, 'Preparing to connect to the gateway...');
-
-    try {
-      await this.ws.connect();
-      return this.token;
-    } catch (error) {
-      this.destroy();
-      throw error;
-    }
   }
 
   /**
