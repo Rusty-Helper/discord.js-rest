@@ -2,7 +2,6 @@
 
 const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
-const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const { Error, TypeError } = require('../errors');
 const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
@@ -47,12 +46,6 @@ class Client extends BaseClient {
      * @private
      */
     this.actions = new ActionsManager(this);
-
-    /**
-     * The voice manager of the client
-     * @type {ClientVoiceManager}
-     */
-    this.voice = new ClientVoiceManager(this);
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
