@@ -10,7 +10,6 @@
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="NPM downloads" /></a>
     <a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/workflows/Testing/badge.svg" alt="Build status" /></a>
     <a href="https://david-dm.org/discordjs/discord.js"><img src="https://img.shields.io/david/discordjs/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
-    <a href="https://www.patreon.com/discordjs"><img src="https://img.shields.io/badge/donate-patreon-F96854.svg" alt="Patreon" /></a>
   </p>
   <p>
     <a href="https://nodei.co/npm/discord.js/"><img src="https://nodei.co/npm/discord.js.png?downloads=true&stars=true" alt="npm installnfo" /></a>
@@ -31,8 +30,10 @@
 
 ## About
 
-discord.js-lite is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
-[Discord API](https://discord.com/developers/docs/intro) without the need for connecting to the [websocket gateway](https://discord.com/developers/docs/topics/gateway)
+discord.js-lite is a powerful fork of the [discord.js](https://github.com/discordjs/discord.js) [Node.js](https://nodejs.org) module 
+
+The module allows you to communicate with the [Discord HTTP API](https://discord.com/developers/docs/intro) without the 
+need for connecting to the [websocket gateway](https://discord.com/developers/docs/topics/gateway) and the complexity of managing that
 
 When operating a bot at scale it is more performant to be able to send messages and interact with the Discord API without 
 the need to login and receive gateway data from Discord. 
@@ -60,14 +61,19 @@ Unlike discord.js this module is *not* event driven meaning you need to control 
 ## When you should use
 
 ✔️ Posting a message to a channel after an AWS Lambda event has triggered
+
 ✔️ Sending/Editing messages to a guild on a cron job
+
 ✔️ Checking if the bot has permissions in a certain channel
+
 ✔️ Fetching information about an emoji
 
 ## When you should not use
 
 ❌ Running code based on a user input (like a command)
+
 ❌ If you want the process to be online 24/7
+
 ❌ Reacting to any event
 
 ## Installation
