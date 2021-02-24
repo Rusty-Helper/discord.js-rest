@@ -20,67 +20,73 @@
 ## Table of contents
 
 - [About](#about)
+- [Use Cases](#use-cases)
+  - [When you should use](#use-cases)
+  - [When you should not use](#use-cases)
 - [Installation](#installation)
-  - [Audio engines](#audio-engines)
-  - [Optional packages](#optional-packages)
 - [Example Usage](#example-usage)
 - [Links](#links)
-  - [Extensions](#extensions)
 - [Contributing](#contributing)
 - [Help](#help)
 
 ## About
 
-discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
-[Discord API](https://discord.com/developers/docs/intro).
+discord.js-lite is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
+[Discord API](https://discord.com/developers/docs/intro) without the need for connecting to the [websocket gateway](https://discord.com/developers/docs/topics/gateway)
+
+When operating a bot at scale it is more performant to be able to send messages and interact with the Discord API without 
+the need to login and receive gateway data from Discord. 
+
+discord.js-lite allows you to send messages as well as interact with the Discord API in a fast and efficient manner 
 
 - Object-oriented
-- Predictable abstractions
-- Performant
-- 100% coverage of the Discord API
+- Predictable abstractions from [discord.js](https://github.com/discordjs/discord.js)
+- Extremely performant
+- No login required
+- Not event driven
+- One way communication
+
+## Use Cases
+
+This module is **NOT** meant as a replacement to [discord.js](https://github.com/discordjs/discord.js) and you should not treat it like on
+
+You should first have a strong grasp of [discord.js](https://github.com/discordjs/discord.js) as this module is a fork of it.
+I have tried to preserve the names and syntax of the origional libarry
+
+This module is designed to be used as an ephemeral Discord API client to get data you need and run a short lived task.
+
+Unlike discord.js this module is *not* event driven meaning you need to control when the code is run
+
+## When you should use
+
+✔️ Posting a message to a channel after an AWS Lambda event has triggered
+✔️ Sending/Editing messages to a guild on a cron job
+✔️ Checking if the bot has permissions in a certain channel
+✔️ Fetching information about an emoji
+
+## When you should not use
+
+❌ Running code based on a user input (like a command)
+❌ If you want the process to be online 24/7
+❌ Reacting to any event
 
 ## Installation
 
 **Node.js 14.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
-Without voice support: `npm install discord.js`  
-With voice support ([@discordjs/opus](https://www.npmjs.com/package/@discordjs/opus)): `npm install discord.js @discordjs/opus`  
-With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
-
-### Audio engines
-
-The preferred audio engine is @discordjs/opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose @discordjs/opus.
-Using opusscript is only recommended for development environments where @discordjs/opus is tough to get working.
-For production bots, using @discordjs/opus should be considered a necessity, especially if they're going to be running on multiple servers.
-
-### Optional packages
-
-- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
-- [erlpack](https://github.com/discord/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discord/erlpack`)
-- One of the following packages can be installed for faster voice packet encryption and decryption:
-  - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium`)
-  - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers`)
-- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
-- [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
+`npm install discord.js-lite`  
 
 ## Example usage
 
 ```js
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client('token');
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-});
-
-client.on('message', msg => {
-  if (msg.content === 'ping') {
-    msg.channel.send('pong');
-  }
-});
-
-client.login('token');
+if (client.channel('801403698974556161').myPermissions().has('ADMINISTRATOR')) {
+  const message = await client.channel('801403698974556161').send('Your daily 7am wake up call!')
+  await client.message(message.id).edit('Nevermind its summer you can sleep until 9am!')
+}
 ```
 
 ## Links
@@ -94,10 +100,6 @@ client.login('token');
 - [GitHub](https://github.com/discordjs/discord.js)
 - [NPM](https://www.npmjs.com/package/discord.js)
 - [Related libraries](https://discordapi.com/unofficial/libs.html)
-
-### Extensions
-
-- [RPC](https://www.npmjs.com/package/discord-rpc) ([source](https://github.com/discordjs/RPC))
 
 ## Contributing
 
