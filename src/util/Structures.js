@@ -13,8 +13,6 @@
  * * **`Guild`**
  * * **`Message`**
  * * **`MessageReaction`**
- * * **`Presence`**
- * * **`ClientPresence`**
  * * **`VoiceState`**
  * * **`Role`**
  * * **`User`**
@@ -102,8 +100,6 @@ const structures = {
   Guild: require('../structures/Guild'),
   Message: require('../structures/Message'),
   MessageReaction: require('../structures/MessageReaction'),
-  Presence: require('../structures/Presence').Presence,
-  ClientPresence: require('../structures/ClientPresence'),
   VoiceState: require('../structures/VoiceState'),
   Role: require('../structures/Role'),
   User: require('../structures/User'),

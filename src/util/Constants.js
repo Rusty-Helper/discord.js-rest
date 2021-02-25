@@ -6,11 +6,6 @@ const { Error, RangeError } = require('../errors');
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {number|number[]|string} [shards] ID of the shard to run, or an array of shard IDs. If not specified,
- * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
- * recommended amount of shards from Discord and spawn that amount
- * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
- * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
  * indefinitely)
@@ -19,49 +14,22 @@ const { Error, RangeError } = require('../errors');
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the message cache lifetime (in seconds, 0 for never)
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
- * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
- * they're missing all the data for a particular structure. See the "Partials" topic listed in the sidebar for some
- * important usage information, as partials require you to put checks in place when handling data.
- * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
- * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in milliseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
  * @property {number} [restRequestTimeout=15000] Time to wait before cancelling a REST request, in milliseconds
  * @property {number} [restSweepInterval=60] How frequently to delete inactive request buckets, in seconds
  * (or 0 for never)
  * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
- * @property {IntentsResolvable} intents Intents to enable for this connection
- * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
-  shardCount: 1,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
-  partials: [],
-  restWsBridgeTimeout: 5000,
   restRequestTimeout: 15000,
   retryLimit: 1,
   restTimeOffset: 500,
   restSweepInterval: 60,
-
-  /**
-   * WebSocket options (these are left as snake_case to match the API)
-   * @typedef {Object} WebsocketOptions
-   * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
-   * sent in the initial guild member list, must be between 50 and 250
-   */
-  ws: {
-    large_threshold: 50,
-    compress: false,
-    properties: {
-      $os: process.platform,
-      $browser: 'discord.js',
-      $device: 'discord.js',
-    },
-    version: 8,
-  },
 
   /**
    * HTTP options
@@ -82,15 +50,6 @@ exports.DefaultOptions = {
 };
 
 exports.UserAgent = `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
-
-exports.WSCodes = {
-  1000: 'WS_CLOSE_REQUESTED',
-  4004: 'TOKEN_INVALID',
-  4010: 'SHARDING_INVALID',
-  4011: 'SHARDING_REQUIRED',
-  4013: 'INVALID_INTENTS',
-  4014: 'DISALLOWED_INTENTS',
-};
 
 const AllowedImageFormats = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
 
@@ -144,234 +103,6 @@ exports.Endpoints = {
   invite: (root, code) => `${root}/${code}`,
   botGateway: '/gateway/bot',
 };
-
-/**
- * The current status of the client. Here are the available statuses:
- * * READY: 0
- * * CONNECTING: 1
- * * RECONNECTING: 2
- * * IDLE: 3
- * * NEARLY: 4
- * * DISCONNECTED: 5
- * * WAITING_FOR_GUILDS: 6
- * * IDENTIFYING: 7
- * * RESUMING: 8
- * @typedef {number} Status
- */
-exports.Status = {
-  READY: 0,
-  CONNECTING: 1,
-  RECONNECTING: 2,
-  IDLE: 3,
-  NEARLY: 4,
-  DISCONNECTED: 5,
-  WAITING_FOR_GUILDS: 6,
-  IDENTIFYING: 7,
-  RESUMING: 8,
-};
-
-/**
- * The current status of a voice connection. Here are the available statuses:
- * * CONNECTED: 0
- * * CONNECTING: 1
- * * AUTHENTICATING: 2
- * * RECONNECTING: 3
- * * DISCONNECTED: 4
- * @typedef {number} VoiceStatus
- */
-exports.VoiceStatus = {
-  CONNECTED: 0,
-  CONNECTING: 1,
-  AUTHENTICATING: 2,
-  RECONNECTING: 3,
-  DISCONNECTED: 4,
-};
-
-exports.OPCodes = {
-  DISPATCH: 0,
-  HEARTBEAT: 1,
-  IDENTIFY: 2,
-  STATUS_UPDATE: 3,
-  VOICE_STATE_UPDATE: 4,
-  VOICE_GUILD_PING: 5,
-  RESUME: 6,
-  RECONNECT: 7,
-  REQUEST_GUILD_MEMBERS: 8,
-  INVALID_SESSION: 9,
-  HELLO: 10,
-  HEARTBEAT_ACK: 11,
-};
-
-exports.VoiceOPCodes = {
-  IDENTIFY: 0,
-  SELECT_PROTOCOL: 1,
-  READY: 2,
-  HEARTBEAT: 3,
-  SESSION_DESCRIPTION: 4,
-  SPEAKING: 5,
-  HELLO: 8,
-  CLIENT_CONNECT: 12,
-  CLIENT_DISCONNECT: 13,
-};
-
-exports.Events = {
-  RATE_LIMIT: 'rateLimit',
-  CLIENT_READY: 'ready',
-  GUILD_CREATE: 'guildCreate',
-  GUILD_DELETE: 'guildDelete',
-  GUILD_UPDATE: 'guildUpdate',
-  GUILD_UNAVAILABLE: 'guildUnavailable',
-  GUILD_AVAILABLE: 'guildAvailable',
-  GUILD_MEMBER_ADD: 'guildMemberAdd',
-  GUILD_MEMBER_REMOVE: 'guildMemberRemove',
-  GUILD_MEMBER_UPDATE: 'guildMemberUpdate',
-  GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable',
-  GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
-  GUILD_MEMBERS_CHUNK: 'guildMembersChunk',
-  GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate',
-  GUILD_ROLE_CREATE: 'roleCreate',
-  GUILD_ROLE_DELETE: 'roleDelete',
-  INVITE_CREATE: 'inviteCreate',
-  INVITE_DELETE: 'inviteDelete',
-  GUILD_ROLE_UPDATE: 'roleUpdate',
-  GUILD_EMOJI_CREATE: 'emojiCreate',
-  GUILD_EMOJI_DELETE: 'emojiDelete',
-  GUILD_EMOJI_UPDATE: 'emojiUpdate',
-  GUILD_BAN_ADD: 'guildBanAdd',
-  GUILD_BAN_REMOVE: 'guildBanRemove',
-  CHANNEL_CREATE: 'channelCreate',
-  CHANNEL_DELETE: 'channelDelete',
-  CHANNEL_UPDATE: 'channelUpdate',
-  CHANNEL_PINS_UPDATE: 'channelPinsUpdate',
-  MESSAGE_CREATE: 'message',
-  MESSAGE_DELETE: 'messageDelete',
-  MESSAGE_UPDATE: 'messageUpdate',
-  MESSAGE_BULK_DELETE: 'messageDeleteBulk',
-  MESSAGE_REACTION_ADD: 'messageReactionAdd',
-  MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
-  MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
-  MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji',
-  USER_UPDATE: 'userUpdate',
-  PRESENCE_UPDATE: 'presenceUpdate',
-  VOICE_SERVER_UPDATE: 'voiceServerUpdate',
-  VOICE_STATE_UPDATE: 'voiceStateUpdate',
-  VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
-  VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
-  TYPING_START: 'typingStart',
-  TYPING_STOP: 'typingStop',
-  WEBHOOKS_UPDATE: 'webhookUpdate',
-  ERROR: 'error',
-  WARN: 'warn',
-  DEBUG: 'debug',
-  SHARD_DISCONNECT: 'shardDisconnect',
-  SHARD_ERROR: 'shardError',
-  SHARD_RECONNECTING: 'shardReconnecting',
-  SHARD_READY: 'shardReady',
-  SHARD_RESUME: 'shardResume',
-  INVALIDATED: 'invalidated',
-  RAW: 'raw',
-};
-
-exports.ShardEvents = {
-  CLOSE: 'close',
-  DESTROYED: 'destroyed',
-  INVALID_SESSION: 'invalidSession',
-  READY: 'ready',
-  RESUMED: 'resumed',
-  ALL_READY: 'allReady',
-};
-
-/**
- * The type of Structure allowed to be a partial:
- * * USER
- * * CHANNEL (only affects DMChannels)
- * * GUILD_MEMBER
- * * MESSAGE
- * * REACTION
- * <warn>Partials require you to put checks in place when handling data, read the Partials topic listed in the
- * sidebar for more information.</warn>
- * @typedef {string} PartialType
- */
-exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION']);
-
-/**
- * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
- * * READY
- * * RESUMED
- * * GUILD_CREATE
- * * GUILD_DELETE
- * * GUILD_UPDATE
- * * INVITE_CREATE
- * * INVITE_DELETE
- * * GUILD_MEMBER_ADD
- * * GUILD_MEMBER_REMOVE
- * * GUILD_MEMBER_UPDATE
- * * GUILD_MEMBERS_CHUNK
- * * GUILD_INTEGRATIONS_UPDATE
- * * GUILD_ROLE_CREATE
- * * GUILD_ROLE_DELETE
- * * GUILD_ROLE_UPDATE
- * * GUILD_BAN_ADD
- * * GUILD_BAN_REMOVE
- * * GUILD_EMOJIS_UPDATE
- * * CHANNEL_CREATE
- * * CHANNEL_DELETE
- * * CHANNEL_UPDATE
- * * CHANNEL_PINS_UPDATE
- * * MESSAGE_CREATE
- * * MESSAGE_DELETE
- * * MESSAGE_UPDATE
- * * MESSAGE_DELETE_BULK
- * * MESSAGE_REACTION_ADD
- * * MESSAGE_REACTION_REMOVE
- * * MESSAGE_REACTION_REMOVE_ALL
- * * MESSAGE_REACTION_REMOVE_EMOJI
- * * USER_UPDATE
- * * PRESENCE_UPDATE
- * * TYPING_START
- * * VOICE_STATE_UPDATE
- * * VOICE_SERVER_UPDATE
- * * WEBHOOKS_UPDATE
- * @typedef {string} WSEventType
- */
-exports.WSEvents = keyMirror([
-  'READY',
-  'RESUMED',
-  'GUILD_CREATE',
-  'GUILD_DELETE',
-  'GUILD_UPDATE',
-  'INVITE_CREATE',
-  'INVITE_DELETE',
-  'GUILD_MEMBER_ADD',
-  'GUILD_MEMBER_REMOVE',
-  'GUILD_MEMBER_UPDATE',
-  'GUILD_MEMBERS_CHUNK',
-  'GUILD_INTEGRATIONS_UPDATE',
-  'GUILD_ROLE_CREATE',
-  'GUILD_ROLE_DELETE',
-  'GUILD_ROLE_UPDATE',
-  'GUILD_BAN_ADD',
-  'GUILD_BAN_REMOVE',
-  'GUILD_EMOJIS_UPDATE',
-  'CHANNEL_CREATE',
-  'CHANNEL_DELETE',
-  'CHANNEL_UPDATE',
-  'CHANNEL_PINS_UPDATE',
-  'MESSAGE_CREATE',
-  'MESSAGE_DELETE',
-  'MESSAGE_UPDATE',
-  'MESSAGE_DELETE_BULK',
-  'MESSAGE_REACTION_ADD',
-  'MESSAGE_REACTION_REMOVE',
-  'MESSAGE_REACTION_REMOVE_ALL',
-  'MESSAGE_REACTION_REMOVE_EMOJI',
-  'USER_UPDATE',
-  'PRESENCE_UPDATE',
-  'TYPING_START',
-  'VOICE_STATE_UPDATE',
-  'VOICE_SERVER_UPDATE',
-  'WEBHOOKS_UPDATE',
-]);
 
 /**
  * A valid scope to request when generating an invite link.
@@ -453,19 +184,6 @@ exports.MessageTypes = [
  * @typedef {string} SystemMessageType
  */
 exports.SystemMessageTypes = exports.MessageTypes.filter(type => type && type !== 'DEFAULT' && type !== 'REPLY');
-
-/**
- * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
- * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
- * * PLAYING
- * * STREAMING
- * * LISTENING
- * * WATCHING
- * * CUSTOM_STATUS
- * * COMPETING
- * @typedef {string} ActivityType
- */
-exports.ActivityTypes = ['PLAYING', 'STREAMING', 'LISTENING', 'WATCHING', 'CUSTOM_STATUS', 'COMPETING'];
 
 exports.ChannelTypes = {
   TEXT: 0,
@@ -714,12 +432,6 @@ exports.WebhookTypes = [
  * @typedef {string} OverwriteType
  */
 exports.OverwriteTypes = createEnum(['role', 'member']);
-
-function keyMirror(arr) {
-  let tmp = Object.create(null);
-  for (const value of arr) tmp[value] = value;
-  return tmp;
-}
 
 function createEnum(keys) {
   const obj = {};
