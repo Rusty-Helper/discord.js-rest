@@ -1,7 +1,6 @@
 'use strict';
 
 const BaseClient = require('./BaseClient');
-const ActionsManager = require('./actions/ActionsManager');
 const { TypeError } = require('../errors');
 const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
 const ChannelManager = require('../managers/ChannelManager');
@@ -32,13 +31,6 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     this._validateOptions();
-
-    /**
-     * The action manager of the client
-     * @type {ActionsManager}
-     * @private
-     */
-    this.actions = new ActionsManager(this);
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
