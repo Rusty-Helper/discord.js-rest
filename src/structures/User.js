@@ -139,20 +139,6 @@ class User extends Base {
   }
 
   /**
-   * The presence of this user
-   * @type {Presence}
-   * @readonly
-   */
-  get presence() {
-    for (const guild of this.client.guilds.cache.values()) {
-      if (guild.presences.cache.has(this.id)) return guild.presences.cache.get(this.id);
-    }
-    if (!Structures) Structures = require('../util/Structures');
-    const Presence = Structures.get('Presence');
-    return new Presence(this.client, { user: { id: this.id } });
-  }
-
-  /**
    * A link to the user's avatar.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}

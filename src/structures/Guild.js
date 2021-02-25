@@ -13,7 +13,6 @@ const { Error, TypeError } = require('../errors');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
-const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
 const Collection = require('../util/Collection');
@@ -60,12 +59,6 @@ class Guild extends Base {
      * @type {RoleManager}
      */
     this.roles = new RoleManager(this);
-
-    /**
-     * A manager of the presences belonging to this guild
-     * @type {PresenceManager}
-     */
-    this.presences = new PresenceManager(this.client);
 
     /**
      * A manager of the voice states of this guild
@@ -296,17 +289,6 @@ class Guild extends Base {
       this.maximumMembers = null;
     }
 
-    if (typeof data.max_presences !== 'undefined') {
-      /**
-       * The maximum amount of presences the guild can have
-       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
-       * @type {?number}
-       */
-      this.maximumPresences = data.max_presences || 25000;
-    } else if (typeof this.maximumPresences === 'undefined') {
-      this.maximumPresences = null;
-    }
-
     if (typeof data.approximate_member_count !== 'undefined') {
       /**
        * The approximate amount of members the guild has
@@ -316,17 +298,6 @@ class Guild extends Base {
       this.approximateMemberCount = data.approximate_member_count;
     } else if (typeof this.approximateMemberCount === 'undefined') {
       this.approximateMemberCount = null;
-    }
-
-    if (typeof data.approximate_presence_count !== 'undefined') {
-      /**
-       * The approximate amount of presences the guild has
-       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
-       * @type {?number}
-       */
-      this.approximatePresenceCount = data.approximate_presence_count;
-    } else if (typeof this.approximatePresenceCount === 'undefined') {
-      this.approximatePresenceCount = null;
     }
 
     /**
@@ -401,12 +372,6 @@ class Guild extends Base {
        * @type {Snowflake}
        */
       this.ownerID = data.owner_id;
-    }
-
-    if (data.presences) {
-      for (const presence of data.presences) {
-        this.presences.add(Object.assign(presence, { guild: this }));
-      }
     }
 
     if (data.voice_states) {
@@ -1439,7 +1404,6 @@ class Guild extends Base {
       available: false,
       createdTimestamp: true,
       nameAcronym: true,
-      presences: false,
       voiceStates: false,
     });
     json.iconURL = this.iconURL();

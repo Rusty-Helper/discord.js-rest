@@ -17,7 +17,6 @@ const { Events, InviteScopes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
 const Permissions = require('../util/Permissions');
-const Structures = require('../util/Structures');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -53,14 +52,6 @@ class Client extends BaseClient {
      * @type {ChannelManager}
      */
     this.channels = new ChannelManager(this);
-
-    const ClientPresence = Structures.get('ClientPresence');
-    /**
-     * The presence of the Client
-     * @private
-     * @type {ClientPresence}
-     */
-    this.presence = new ClientPresence(this, options.presence);
 
     Object.defineProperty(this, 'token', { writable: true });
     if (!this.token && 'DISCORD_TOKEN' in process.env) {

@@ -30,7 +30,6 @@ const { Error, RangeError } = require('../errors');
  * @property {number} [restSweepInterval=60] How frequently to delete inactive request buckets, in seconds
  * (or 0 for never)
  * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
- * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {HTTPOptions} [http] HTTP options
@@ -46,7 +45,6 @@ exports.DefaultOptions = {
   retryLimit: 1,
   restTimeOffset: 500,
   restSweepInterval: 60,
-  presence: {},
 
   /**
    * WebSocket options (these are left as snake_case to match the API)

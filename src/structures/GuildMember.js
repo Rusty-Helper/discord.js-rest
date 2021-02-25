@@ -154,25 +154,6 @@ class GuildMember extends Base {
   }
 
   /**
-   * The presence of this guild member
-   * @type {Presence}
-   * @readonly
-   */
-  get presence() {
-    if (!Structures) Structures = require('../util/Structures');
-    const Presence = Structures.get('Presence');
-    return (
-      this.guild.presences.cache.get(this.id) ||
-      new Presence(this.client, {
-        user: {
-          id: this.id,
-        },
-        guild: this.guild,
-      })
-    );
-  }
-
-  /**
    * The displayed color of this member in base 10
    * @type {number}
    * @readonly

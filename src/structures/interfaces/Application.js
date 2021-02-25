@@ -89,23 +89,6 @@ class Application extends Base {
    */
 
   /**
-   * Gets the clients rich presence assets.
-   * @returns {Promise<Array<ApplicationAsset>>}
-   */
-  fetchAssets() {
-    return this.client.api.oauth2
-      .applications(this.id)
-      .assets.get()
-      .then(assets =>
-        assets.map(a => ({
-          id: a.id,
-          name: a.name,
-          type: AssetTypes[a.type - 1],
-        })),
-      );
-  }
-
-  /**
    * When concatenated with a string, this automatically returns the application's name instead of the
    * Oauth2Application object.
    * @returns {string}

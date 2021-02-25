@@ -41,7 +41,6 @@ module.exports = {
   ReactionManager: require('./managers/ReactionManager'),
   ReactionUserManager: require('./managers/ReactionUserManager'),
   MessageManager: require('./managers/MessageManager'),
-  PresenceManager: require('./managers/PresenceManager'),
   RoleManager: require('./managers/RoleManager'),
   UserManager: require('./managers/UserManager'),
 
@@ -56,7 +55,6 @@ module.exports = {
   // Structures
   Application: require('./structures/interfaces/Application'),
   Base: require('./structures/Base'),
-  Activity: require('./structures/Presence').Activity,
   APIMessage: require('./structures/APIMessage'),
   BaseGuildEmoji: require('./structures/BaseGuildEmoji'),
   CategoryChannel: require('./structures/CategoryChannel'),
@@ -86,11 +84,8 @@ module.exports = {
   MessageReaction: require('./structures/MessageReaction'),
   NewsChannel: require('./structures/NewsChannel'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
-  Presence: require('./structures/Presence').Presence,
-  ClientPresence: require('./structures/ClientPresence'),
   ReactionCollector: require('./structures/ReactionCollector'),
   ReactionEmoji: require('./structures/ReactionEmoji'),
-  RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,
   Role: require('./structures/Role'),
   StoreChannel: require('./structures/StoreChannel'),
   Team: require('./structures/Team'),

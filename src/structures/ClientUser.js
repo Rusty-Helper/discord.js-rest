@@ -38,15 +38,6 @@ class ClientUser extends Structures.get('User') {
   }
 
   /**
-   * ClientUser's presence
-   * @type {Presence}
-   * @readonly
-   */
-  get presence() {
-    return this.client.presence;
-  }
-
-  /**
    * Edits the logged in client.
    * @param {Object} data The new data
    * @param {string} [data.username] The new username
@@ -88,93 +79,6 @@ class ClientUser extends Structures.get('User') {
    */
   async setAvatar(avatar) {
     return this.edit({ avatar: await DataResolver.resolveImage(avatar) });
-  }
-
-  /**
-   * Data resembling a raw Discord presence.
-   * @typedef {Object} PresenceData
-   * @property {PresenceStatusData} [status] Status of the user
-   * @property {boolean} [afk] Whether the user is AFK
-   * @property {Object} [activity] Activity the user is playing
-   * @property {string} [activity.name] Name of the activity
-   * @property {ActivityType|number} [activity.type] Type of the activity
-   * @property {string} [activity.url] Twitch / YouTube stream URL
-   * @property {?number|number[]} [shardID] Shard Id(s) to have the activity set on
-   */
-
-  /**
-   * Sets the full presence of the client user.
-   * @param {PresenceData} data Data for the presence
-   * @returns {Presence}
-   * @example
-   * // Set the client user's presence
-   * client.user.setPresence({ activity: { name: 'with discord.js' }, status: 'idle' })
-   *   .then(console.log)
-   *   .catch(console.error);
-   */
-  setPresence(data) {
-    return this.client.presence.set(data);
-  }
-
-  /**
-   * A user's status. Must be one of:
-   * * `online`
-   * * `idle`
-   * * `invisible`
-   * * `dnd` (do not disturb)
-   * @typedef {string} PresenceStatusData
-   */
-
-  /**
-   * Sets the status of the client user.
-   * @param {PresenceStatusData} status Status to change to
-   * @param {?number|number[]} [shardID] Shard ID(s) to have the activity set on
-   * @returns {Presence}
-   * @example
-   * // Set the client user's status
-   * client.user.setStatus('idle')
-   *   .then(console.log)
-   *   .catch(console.error);
-   */
-  setStatus(status, shardID) {
-    return this.setPresence({ status, shardID });
-  }
-
-  /**
-   * Options for setting an activity.
-   * @typedef ActivityOptions
-   * @type {Object}
-   * @property {string} [url] Twitch / YouTube stream URL
-   * @property {ActivityType|number} [type] Type of the activity
-   * @property {number|number[]} [shardID] Shard Id(s) to have the activity set on
-   */
-
-  /**
-   * Sets the activity the client user is playing.
-   * @param {string|ActivityOptions} [name] Activity being played, or options for setting the activity
-   * @param {ActivityOptions} [options] Options for setting the activity
-   * @returns {Presence}
-   * @example
-   * // Set the client user's activity
-   * client.user.setActivity('discord.js', { type: 'WATCHING' })
-   *   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
-   *   .catch(console.error);
-   */
-  setActivity(name, options = {}) {
-    if (!name) return this.setPresence({ activities: null, shardID: options.shardID });
-
-    const activity = Object.assign({}, options, typeof name === 'object' ? name : { name });
-    return this.setPresence({ activities: [activity], shardID: activity.shardID });
-  }
-
-  /**
-   * Sets/removes the AFK flag for the client user.
-   * @param {boolean} afk Whether or not the user is AFK
-   * @param {number|number[]} [shardID] Shard Id(s) to have the AFK flag set on
-   * @returns {Presence}
-   */
-  setAFK(afk, shardID) {
-    return this.setPresence({ afk, shardID });
   }
 }
 

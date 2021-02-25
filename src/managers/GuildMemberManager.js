@@ -77,7 +77,6 @@ class GuildMemberManager extends BaseManager {
    * @property {UserResolvable|UserResolvable[]} user The user(s) to fetch
    * @property {?string} query Limit fetch to members with similar usernames
    * @property {number} [limit=0] Maximum number of members to request
-   * @property {boolean} [withPresences=false] Whether or not to include the presences
    * @property {number} [time=120e3] Timeout for receipt of members
    * @property {?string} nonce Nonce for this request (32 characters max - default to base 16 now timestamp)
    * @property {boolean} [force=false] Whether to skip the cache check and request the API
@@ -110,11 +109,6 @@ class GuildMemberManager extends BaseManager {
    *   .then(console.log)
    *   .catch(console.error);
    * @example
-   * // Fetch by an array of users including their presences
-   * guild.members.fetch({ user: ['66564597481480192', '191615925336670208'], withPresences: true })
-   *   .then(console.log)
-   *   .catch(console.error);
-   * @example
    * // Fetch by query
    * guild.members.fetch({ query: 'hydra', limit: 1 })
    *   .then(console.log)
@@ -131,7 +125,7 @@ class GuildMemberManager extends BaseManager {
       } else {
         options.user = this.client.users.resolveID(options.user);
       }
-      if (!options.limit && !options.withPresences) return this._fetchSingle(options);
+      if (!options.limit) return this._fetchSingle(options);
     }
     return this._fetchMany(options);
   }
@@ -261,17 +255,9 @@ class GuildMemberManager extends BaseManager {
       .then(data => this.add(data, cache));
   }
 
-  _fetchMany({
-    limit = 0,
-    withPresences: presences = false,
-    user: user_ids,
-    query,
-    time = 120e3,
-    nonce = SnowflakeUtil.generate(),
-    force = false,
-  } = {}) {
+  _fetchMany({ limit = 0, user: user_ids, query, time = 120e3, nonce = SnowflakeUtil.generate(), force = false } = {}) {
     return new Promise((resolve, reject) => {
-      if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids && !force) {
+      if (this.guild.memberCount === this.cache.size && !query && !limit && !user_ids && !force) {
         resolve(this.cache);
         return;
       }
@@ -281,7 +267,6 @@ class GuildMemberManager extends BaseManager {
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.guild.id,
-          presences,
           user_ids,
           query,
           nonce,
@@ -289,7 +274,7 @@ class GuildMemberManager extends BaseManager {
         },
       });
       const fetchedMembers = new Collection();
-      const option = query || limit || presences || user_ids;
+      const option = query || limit || user_ids;
       let i = 0;
       const handler = (members, _, chunk) => {
         timeout.refresh();
