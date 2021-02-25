@@ -6,9 +6,6 @@ module.exports = {
   // "Root" classes (starting points)
   BaseClient: require('./client/BaseClient'),
   Client: require('./client/Client'),
-  Shard: require('./sharding/Shard'),
-  ShardClientUtil: require('./sharding/ShardClientUtil'),
-  ShardingManager: require('./sharding/ShardingManager'),
   WebhookClient: require('./client/WebhookClient'),
 
   // Utilities
@@ -104,6 +101,4 @@ module.exports = {
   VoiceRegion: require('./structures/VoiceRegion'),
   VoiceState: require('./structures/VoiceState'),
   Webhook: require('./structures/Webhook'),
-
-  WebSocket: require('./WebSocket'),
 };
