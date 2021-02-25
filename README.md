@@ -48,11 +48,6 @@ discord.js-lite allows you to send messages as well as interact with the Discord
 - Not event driven
 - One way communication
 
-⚠️ Due to the lack of gateway connection this library will not receive events meaning it is very easy to get
-rate limited and not know. There are internal features to prevent rate limiting but it is still possible.
-Being rate limited can lead to temporary or permanent bans from use of the Discord API I suggest you know what 
-you are doing before using this library ⚠️
-
 ## Use Cases
 
 This module is **NOT** meant as a replacement to [discord.js](https://github.com/discordjs/discord.js) and you should not treat it like on
