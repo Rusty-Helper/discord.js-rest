@@ -72,9 +72,13 @@ Unlike discord.js this module is *not* event driven meaning you need to control 
 
 ❌ Running code based on a user input (like a command)
 
+❌ Reacting to any event / using the websocket gateway
+
 ❌ If you want the process to be online 24/7
 
-❌ Reacting to any event
+❌ Changing the bots status or interacting with the bot user in any fashion
+
+❌ If you want to use partials
 
 ## Installation
 
