@@ -2444,6 +2444,7 @@ declare module 'discord.js' {
     intents: BitFieldResolvable<IntentsString, number>;
     ws?: WebSocketOptions;
     http?: HTTPOptions;
+    token: string;
   }
 
   type ClientPresenceStatus = 'online' | 'idle' | 'dnd';

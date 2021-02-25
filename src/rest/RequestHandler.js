@@ -3,9 +3,6 @@
 const AsyncQueue = require('./AsyncQueue');
 const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
-const {
-  Events: { RATE_LIMIT },
-} = require('../util/Constants');
 const Util = require('../util/Util');
 
 function parseResponse(res) {
@@ -49,38 +46,6 @@ class RequestHandler {
   }
 
   async execute(request) {
-    // After calculations and requests have been done, pre-emptively stop further requests
-    if (this.limited) {
-      const timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
-
-      if (this.manager.client.listenerCount(RATE_LIMIT)) {
-        /**
-         * Emitted when the client hits a rate limit while making a request
-         * @event Client#rateLimit
-         * @param {Object} rateLimitInfo Object containing the rate limit info
-         * @param {number} rateLimitInfo.timeout Timeout in ms
-         * @param {number} rateLimitInfo.limit Number of requests that can be made to this endpoint
-         * @param {string} rateLimitInfo.method HTTP method used for request that triggered this event
-         * @param {string} rateLimitInfo.path Path used for request that triggered this event
-         * @param {string} rateLimitInfo.route Route used for request that triggered this event
-         */
-        this.manager.client.emit(RATE_LIMIT, {
-          timeout,
-          limit: this.limit,
-          method: request.method,
-          path: request.path,
-          route: request.route,
-        });
-      }
-
-      if (this.manager.globalTimeout) {
-        await this.manager.globalTimeout;
-      } else {
-        // Wait for the timeout to expire in order to avoid an actual 429
-        await Util.delayFor(timeout);
-      }
-    }
-
     // Perform the request
     let res;
     try {

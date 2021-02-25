@@ -24,6 +24,7 @@
   - [When you should not use](#use-cases)
 - [Installation](#installation)
 - [Example Usage](#example-usage)
+  - [Sending Messages](#sending-messages)
 - [Links](#links)
 - [Contributing](#contributing)
 - [Help](#help)
@@ -46,6 +47,11 @@ discord.js-lite allows you to send messages as well as interact with the Discord
 - No login required
 - Not event driven
 - One way communication
+
+⚠️ Due to the lack of gateway connection this library will not receive events meaning it is very easy to get
+rate limited and not know. There are internal features to prevent rate limiting but it is still possible.
+Being rate limited can lead to temporary or permanent bans from use of the Discord API I suggest you know what 
+you are doing before using this library ⚠️
 
 ## Use Cases
 
@@ -80,6 +86,8 @@ Unlike discord.js this module is *not* event driven meaning you need to control 
 
 ❌ If you want to use partials
 
+❌ When using caching in any way
+
 ## Installation
 
 **Node.js 14.0.0 or newer is required.**  
@@ -98,6 +106,44 @@ if (client.channel('801403698974556161').myPermissions().has('ADMINISTRATOR')) {
   await client.message(message.id).edit('Nevermind its summer you can sleep until 9am!')
 }
 ```
+
+### Sending Messages
+
+How you would normally send messages in discord.js to a channel not in response to a message
+
+```js
+// Method 1 - With caching:
+client.channels.cache.get('801403698974556161').send('Message')
+```
+
+This method fetches the channel directly from cache which, although fast, will use up a lot
+of memory and is not viable with sharding
+
+```js
+// Method 2 - Without caching:
+client.channels.fetch('801403698974556161').send('Message')
+```
+
+Method 2 fetches from cache first and if not it fetches from the Discord API. This takes time
+as it needs to make a request before it can sent the message
+
+```js
+// Method 3 - Another method witout caching:
+const guild = new discord.Guild(client, { id: '801403698974556161' });
+const channel = new discord.TextChannel(guild, { id: '801403698974556161' });
+channel.send('Message')
+```
+
+Method 3 is the fastest as it constructs the text channel without fetching anything from Discord.
+However it looks very clumsy and isn't necessarily obvious what is going on.
+
+Using discord.js-lite we can combine the efficiency of method 3 with the ease of use of methods 1 and 2
+
+```js
+client.channel('801403698974556161').send('Message')
+```
+
+This makes 1 api call. Doesn't check the cache. Just does what you want no questions asked
 
 ## Links
 

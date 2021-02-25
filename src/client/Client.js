@@ -15,7 +15,6 @@ const Webhook = require('../structures/Webhook');
 const Collection = require('../util/Collection');
 const { Events, InviteScopes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Intents = require('../util/Intents');
 const Permissions = require('../util/Permissions');
 
 /**
@@ -24,9 +23,10 @@ const Permissions = require('../util/Permissions');
  */
 class Client extends BaseClient {
   /**
+   * @param {?string} token The token of your bot
    * @param {ClientOptions} options Options for the client
    */
-  constructor(options) {
+  constructor(token, options) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     this._validateOptions();
@@ -54,7 +54,7 @@ class Client extends BaseClient {
     this.channels = new ChannelManager(this);
 
     Object.defineProperty(this, 'token', { writable: true });
-    if (!this.token && 'DISCORD_TOKEN' in process.env) {
+    if ('DISCORD_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in bot.
        * If present, this defaults to `process.env.DISCORD_TOKEN` when instantiating the client
@@ -62,8 +62,10 @@ class Client extends BaseClient {
        * @type {?string}
        */
       this.token = process.env.DISCORD_TOKEN;
+    } else if (token) {
+      this.token = token;
     } else {
-      this.token = null;
+      this.token = options.token;
     }
 
     /**
@@ -345,26 +347,6 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (typeof options.intents === 'undefined') {
-      throw new TypeError('CLIENT_MISSING_INTENTS');
-    } else {
-      options.intents = Intents.resolve(options.intents);
-    }
-    if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
-    }
-    if (typeof options.messageCacheLifetime !== 'number' || isNaN(options.messageCacheLifetime)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'The messageCacheLifetime', 'a number');
-    }
-    if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'messageSweepInterval', 'a number');
-    }
-    if (!Array.isArray(options.partials)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'partials', 'an Array');
-    }
-    if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
-    }
     if (typeof options.restRequestTimeout !== 'number' || isNaN(options.restRequestTimeout)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restRequestTimeout', 'a number');
     }
