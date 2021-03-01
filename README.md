@@ -1,20 +1,4 @@
-<div align="center">
-  <br />
-  <p>
-    <a href="https://discord.js.org"><img src="https://discord.js.org/static/logo.svg" width="546" alt="discord.js" /></a>
-  </p>
-  <br />
-  <p>
-    <a href="https://discord.gg/bRCvFy9"><img src="https://img.shields.io/discord/222078108977594368?color=7289da&logo=discord&logoColor=white" alt="Discord server" /></a>
-    <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/v/discord.js.svg?maxAge=3600" alt="NPM version" /></a>
-    <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="NPM downloads" /></a>
-    <a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/workflows/Testing/badge.svg" alt="Build status" /></a>
-    <a href="https://david-dm.org/discordjs/discord.js"><img src="https://img.shields.io/david/discordjs/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
-  </p>
-  <p>
-    <a href="https://nodei.co/npm/discord.js/"><img src="https://nodei.co/npm/discord.js.png?downloads=true&stars=true" alt="npm installnfo" /></a>
-  </p>
-</div>
+# Discord.js REST HTTP Client
 
 ## Table of contents
 
@@ -31,22 +15,21 @@
 
 ## About
 
-discord.js-lite is a powerful fork of the [discord.js](https://github.com/discordjs/discord.js) [Node.js](https://nodejs.org) module 
+discord.js-rest is a powerful fork of the popular [discord.js](https://github.com/discordjs/discord.js)
 
-The module allows you to communicate with the [Discord HTTP API](https://discord.com/developers/docs/intro) without the 
+The module allows you to communicate with the [Discord REST HTTP API](https://discord.com/developers/docs/intro) without the 
 need for connecting to the [websocket gateway](https://discord.com/developers/docs/topics/gateway) and the complexity of managing that
 
 When operating a bot at scale it is more performant to be able to send messages and interact with the Discord API without 
 the need to login and receive gateway data from Discord. 
 
-discord.js-lite allows you to send messages as well as interact with the Discord API in a fast and efficient manner 
+discord.js-rest allows you to send messages as well as interact with the Discord API in a fast and efficient manner 
 
 - Object-oriented
 - Predictable abstractions from [discord.js](https://github.com/discordjs/discord.js)
 - Extremely performant
 - No login required
 - Not event driven
-- One way communication
 
 ## Use Cases
 
@@ -67,7 +50,7 @@ Unlike discord.js this module is *not* event driven meaning you need to control 
 
 ✔️ Checking if the bot has permissions in a certain channel
 
-✔️ Fetching information about an emoji
+✔️ Fetching information about a guild / user / emoji from a dashboard
 
 ## When you should not use
 
@@ -88,7 +71,7 @@ Unlike discord.js this module is *not* event driven meaning you need to control 
 **Node.js 14.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
-`npm install discord.js-lite`  
+`npm install discord.js-rest`  
 
 ## Example usage
 
@@ -132,7 +115,7 @@ channel.send('Message')
 Method 3 is the fastest as it constructs the text channel without fetching anything from Discord.
 However it looks very clumsy and isn't necessarily obvious what is going on.
 
-Using discord.js-lite we can combine the efficiency of method 3 with the ease of use of methods 1 and 2
+Using discord.js-rest we can combine the efficiency of method 3 with the ease of use of methods 1 and 2
 
 ```js
 client.channel('801403698974556161').send('Message')
@@ -142,14 +125,10 @@ This makes 1 api call. Doesn't check the cache. Just does what you want no quest
 
 ## Links
 
-- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
-- [Documentation](https://discord.js.org/#/docs/main/master/general/welcome)
-- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - this is still for stable  
-  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v12.html), including updated and removed items in the library.
 - [Discord.js Discord server](https://discord.gg/bRCvFy9)
 - [Discord API Discord server](https://discord.gg/discord-api)
-- [GitHub](https://github.com/discordjs/discord.js)
-- [NPM](https://www.npmjs.com/package/discord.js)
+- [GitHub](https://github.com/rusty-helper/discord.js-rest)
+- [NPM](https://www.npmjs.com/package/discord.js-rest)
 - [Related libraries](https://discordapi.com/unofficial/libs.html)
 
 ## Contributing
